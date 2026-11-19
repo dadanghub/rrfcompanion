@@ -21,6 +21,10 @@ module.exports = async (req, res) => {
   const out = { keyCheck: { length: KEY.length, hadExtraCharacters: RAW !== KEY, looksLike32Hex: /^[0-9a-f]{32}$/i.test(KEY) } };
   const c = await call("/collections/doodles-official");
   out.control = { path: c.path, status: c.status, error: c.error, errors: c.body && c.body.errors };
+  const short = (c) => ({ path: c.path, status: c.status, error: c.error, errors: c.body && c.body.errors });
+  out.ethereumNftControl = short(await call("/chain/ethereum/contract/0x8a90cab2b38dba80c64b7734e58ee1db38b8992e/nfts/1"));
+  out.roninCollections = short(await call("/collections?chain=ronin&limit=1"));
+  out.roninContract = await call(`/chain/ronin/contract/${ADDR}`);
   out.nft = await call(`/chain/ronin/contract/${ADDR}/nfts/1`);
   const slug = (req.query && req.query.slug) || (out.nft.body && out.nft.body.nft && out.nft.body.nft.collection);
   out.slug = slug || null;
