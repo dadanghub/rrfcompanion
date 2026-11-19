@@ -143,14 +143,7 @@ footer{text-align:center;color:var(--mu);font-size:.85rem;padding:20px 14px}
 <div class="card scroll" id="mout" style="margin-top:8px" aria-live="polite">Open this tab to load market data.</div>
 </section>
 </main>
-<div id="tip" style="max-width:880px;margin:0 auto;padding:0 14px 8px"><div class="card" style="border-color:var(--gold)">
-<h3>Enjoying the guide?</h3>
-<p style="margin:0 0 8px">This companion is a free fan project. If it helped, an optional tip on the Ronin network keeps it going. Tips are voluntary and don’t unlock anything.</p>
-<code id="tipaddr" style="display:block;word-break:break-all;background:var(--bg);border:1.5px solid var(--ln);border-radius:10px;padding:10px 12px;user-select:all">0x1c1Eaf2832032AE501aC6279d9b732c4983147d5</code>
-<button class="cta alt" id="tipbtn" style="margin-top:10px" onclick="tipCopy(this)">Copy address</button>
-<a class="cta alt" href="https://x.com/dadanngg" target="_blank" rel="noopener" style="margin-top:10px">Follow @dadanngg on X</a>
-<p style="margin:8px 0 0;color:var(--mu);font-size:.85rem">Check that the address matches before you send. Only you control what you send; the site never asks you to connect a wallet.</p>
-</div></div>
+<p id="tip" style="text-align:center;color:var(--mu);font-size:.78rem;margin:0 14px 4px;opacity:.85">Free fan project. Optional tip on Ronin: <code id="tipaddr" style="word-break:break-all;user-select:all">0x1c1Eaf2832032AE501aC6279d9b732c4983147d5</code> <button onclick="tipCopy(this)" style="background:none;border:0;color:inherit;text-decoration:underline;cursor:pointer;font:inherit;padding:6px 4px;min-height:32px">Copy</button></p>
 <footer>Unofficial fan project, not affiliated with RRF Village. Artwork is from the official RRF Village brand kit. <a href="https://x.com/dadanngg" style="color:inherit">Contact</a> · <a href="/terms" style="color:inherit">Terms</a> · <a href="/privacy" style="color:inherit">Privacy</a></footer>
 <script>
 const L=[
@@ -215,6 +208,6 @@ T(["Land","Price","From","To","When","Tx"],(v==="sales"?S:M).map(x=>`<tr><td>${e
 async function ml(){$("#mout").textContent="Loading market data. The first load can take up to a minute.";try{const r=await fetch("/api/market"),j=await r.json();if(!r.ok)throw new Error(j.error||"HTTP "+r.status);MK=j;mr()}catch(e){ML=0;$("#mout").textContent="Couldn’t load market data: "+e.message}}
 $("#mt").onchange=$("#mv").onchange=mr;
 const _sh=show;show=function(t){_sh(t);if(t==="market"&&!MK&&!ML){ML=1;ml()}};
-function tipCopy(b){const a=$("#tipaddr").textContent;(navigator.clipboard?navigator.clipboard.writeText(a):Promise.reject()).then(()=>{b.textContent="Copied!"},()=>{const r=document.createRange();r.selectNodeContents($("#tipaddr"));const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Selected, press copy"});setTimeout(()=>{b.textContent="Copy address"},2500)}
+function tipCopy(b){const a=$("#tipaddr").textContent;(navigator.clipboard?navigator.clipboard.writeText(a):Promise.reject()).then(()=>{b.textContent="Copied!"},()=>{const r=document.createRange();r.selectNodeContents($("#tipaddr"));const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Selected, press copy"});setTimeout(()=>{b.textContent="Copy"},2500)}
 show(location.hash.slice(1));
 </script></body></html>
