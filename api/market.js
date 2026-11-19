@@ -55,7 +55,9 @@ async function build() {
     tx: h.txHash, timestamp: h.timestamp, price: h.withPrice && h.withPrice !== "0" ? ron(h.withPrice) : null,
   })));
   transfers.sort((a, b) => b.timestamp - a.timestamp);
-  return { updated: Math.floor(Date.now() / 1000), totalLands: t0.total, listings, transfers };
+  const names = {};
+  trows.forEach((t) => { names[t.tokenId] = t.name; });
+  return { updated: Math.floor(Date.now() / 1000), totalLands: t0.total, listings, transfers, names };
 }
 // One refresh at a time per instance; everyone else waits for it. On failure, serve the last good copy.
 async function get() {

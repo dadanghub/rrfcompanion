@@ -134,11 +134,12 @@ footer{text-align:center;color:var(--mu);font-size:.85rem;padding:20px 14px}
 </section>
 <section id="s-market" hidden>
 <h2>Genesis Land market</h2>
-<p class="note">Public data from Ronin Market, refreshed about every 30 minutes. Not financial advice. A “sale” here is a transfer with a recorded price (our assumption, not confirmed). Prices appear to be in wrapped RON; treat that as unconfirmed.</p>
+<p class="note">Public data from Ronin Market and OpenSea, refreshed about every 30 minutes. Not financial advice. On Ronin Market a “sale” is a transfer with a recorded price (our assumption). Ronin Market prices are in WRON (wrapped RON, equal to RON); OpenSea listings are in RON. Asking prices may include marketplace fees.</p>
 <div class="grid"><div><label for="mv">View</label><select id="mv"><option value="listed">Listed now</option><option value="sales">Sales</option><option value="moves">Other transfers</option></select></div>
-<div><label for="mt">Tier</label><select id="mt"><option value="">All</option><option>Outpost</option><option>Highlands</option><option>Skyrealm</option><option>Unrevealed</option></select></div></div>
+<div><label for="mt">Tier</label><select id="mt"><option value="">All</option><option>Outpost</option><option>Highlands</option><option>Skyrealm</option><option>Unrevealed</option></select></div>
+<div><label for="ms">Source</label><select id="ms"><option value="">All</option><option>Ronin Market</option><option>OpenSea</option></select></div></div>
 <div class="grid" id="mtier" style="margin-top:14px"></div>
-<p style="color:var(--mu);font-size:.85rem;margin:6px 0 0">Floor is the lowest current listing. Volume adds up recorded sale prices (assumed RON) and counts each land’s latest 10 transfers.</p>
+<p style="color:var(--mu);font-size:.85rem;margin:6px 0 0">Floor is the lowest current listing. Volume adds up sale prices in RON/WRON. A sale seen on both marketplaces is counted once.</p>
 <p id="mst" style="color:var(--mu);margin:10px 0 0"></p>
 <div class="card scroll" id="mout" style="margin-top:8px" aria-live="polite">Open this tab to load market data.</div>
 </section>
@@ -192,21 +193,33 @@ const X=[...L.map(l=>[l.n+" ("+l.rar+" land)","Genesis Lands","lands"]),...C.map
 function gs(){const q=$("#gq").value.toLowerCase().trim(),f=X.filter(x=>!q||(x[0]+x[1]).toLowerCase().includes(q)).slice(0,12);
 $("#gr").innerHTML=f.length?f.map(x=>`<a class="chk" style="text-decoration:none;color:var(--tx)" href="#${x[2]}"><span><b>${x[0]}</b><br><small style="color:var(--mu)">${x[1]}</small></span></a>`).join(""):"No matches. Try a crop name like “wheat”, or a topic like “fees”."}
 $("#gq").oninput=gs;gs();
-let MK=null,ML=0;
+let MK=null,OS=null,M=null,ML=0;
 const dd=s=>new Date(s*1000).toLocaleDateString(undefined,{dateStyle:"medium"});
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const sa=a=>esc(a.slice(0,6)+"…"+a.slice(-4)),dt=s=>new Date(s*1000).toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"}),px=n=>n==null?"–":n.toLocaleString(undefined,{maximumFractionDigits:2})+" RON";
-const TC={Outpost:"#3b82a8",Highlands:"#c98a1a",Skyrealm:"#8a4fc2"};
-function ts(){const now=Date.now()/1000;$("#mtier").innerHTML=Object.keys(TC).map(n=>{const li=MK.listings.filter(x=>x.tier===n),sl=MK.transfers.filter(x=>x.tier===n&&x.price!=null),fl=li.length?Math.min(...li.map(x=>x.price)):null,vol=sl.reduce((a,x)=>a+x.price,0),v24=sl.filter(x=>x.timestamp>now-86400).reduce((a,x)=>a+x.price,0);return `<div class="card" style="margin:0;border-color:${TC[n]}"><h3>${n}</h3><p class="big" style="font-size:1.5rem;margin:0">${px(fl)}</p><p style="margin:4px 0 0;color:var(--mu)">floor · ${li.length} listed<br>${sl.length} sales · ${px(vol)} volume<br>${px(v24)} in the last 24 h</p></div>`}).join("")}
-function mr(){if(!MK)return;setTimeout(()=>{$("#mout").scrollLeft=0});const tr=$("#mt").value,v=$("#mv").value,ok=x=>!tr||x.tier===tr;
-const LS={};MK.transfers.forEach(x=>{if(x.price!=null&&!LS[x.tokenId])LS[x.tokenId]=x});const L=MK.listings.filter(ok).sort((a,b)=>a.price-b.price),S=MK.transfers.filter(x=>ok(x)&&x.price!=null),M=MK.transfers.filter(x=>ok(x)&&x.price==null);
-ts();$("#mst").textContent=`${L.length} listed${L.length?", lowest "+px(L[0].price):""} · ${S.length} sales · ${M.length} other transfers · updated ${dt(MK.updated)}${MK.stale?" (saved copy)":""}`;
+const sa=a=>esc((a||"?").slice(0,6)+"…"+(a||"?").slice(-4)),dt=s=>new Date(s*1000).toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"}),px=n=>n==null?"–":n.toLocaleString(undefined,{maximumFractionDigits:2})+" RON";
+const TC={Outpost:"#3b82a8",Highlands:"#c98a1a",Skyrealm:"#8a4fc2"},CA="0xa3daa6ccbe9abc148eb503c9c12b1220e1a9ca36";
+const tierOf=n=>(/^(Outpost|Highlands|Skyrealm)/.exec(n||"")||["Unrevealed"])[0];
+function merge(){const nm=(MK&&MK.names)||{},sales=new Map();
+const rl=(MK?MK.listings:[]).map(x=>({...x,src:"Ronin Market"})),
+ol=(OS?OS.listings:[]).map(x=>{const n=nm[x.tokenId]||"Land #"+x.tokenId;return{...x,name:n,tier:tierOf(n),src:"OpenSea"}});
+let mv=[];(MK?MK.transfers:[]).forEach(x=>{if(x.price==null)mv.push({...x,src:"Ronin Market"});else sales.set(x.tx+"|"+x.tokenId,{...x,src:"Ronin Market"})});
+(OS?OS.sales:[]).forEach(x=>{const k=x.tx+"|"+x.tokenId,e=sales.get(k);if(e)e.src="Both";else sales.set(k,{...x,tier:tierOf(x.name),src:"OpenSea"})});
+mv=mv.filter(x=>!sales.has(x.tx+"|"+x.tokenId));
+return{listings:[...rl,...ol],sales:[...sales.values()].sort((a,b)=>b.timestamp-a.timestamp),moves:mv}}
+function ts(){const now=Date.now()/1000;$("#mtier").innerHTML=Object.keys(TC).map(n=>{const li=M.listings.filter(x=>x.tier===n),u=new Set(li.map(x=>x.tokenId)).size,sl=M.sales.filter(x=>x.tier===n),fl=li.length?Math.min(...li.map(x=>x.price)):null,vol=sl.reduce((a,x)=>a+x.price,0),v24=sl.filter(x=>x.timestamp>now-86400).reduce((a,x)=>a+x.price,0);return `<div class="card" style="margin:0;border-color:${TC[n]}"><h3>${n}</h3><p class="big" style="font-size:1.5rem;margin:0">${px(fl)}</p><p style="margin:4px 0 0;color:var(--mu)">floor · ${u} listed<br>${sl.length} sales · ${px(vol)} volume<br>${px(v24)} in the last 24 h</p></div>`}).join("")}
+function mr(){if(!M)return;setTimeout(()=>{$("#mout").scrollLeft=0});const tr=$("#mt").value,v=$("#mv").value,sr=$("#ms").value,ok=x=>(!tr||x.tier===tr)&&(!sr||x.src===sr||x.src==="Both");
+const LS={};M.sales.forEach(x=>{if(!LS[x.tokenId])LS[x.tokenId]=x});
+const L=M.listings.filter(ok).sort((a,b)=>a.price-b.price),S=M.sales.filter(ok),V=M.moves.filter(ok);
+ts();$("#mst").textContent=`${new Set(L.map(x=>x.tokenId)).size} lands listed${L.length?", lowest "+px(L[0].price):""} · ${S.length} sales · ${V.length} other transfers · updated ${dt(M.updated)}${M.stale?" (saved copy)":""}${M.err.length?" · "+M.err.join(" and ")+" data unavailable":""}`;
 const tx=x=>`<a href="https://app.roninchain.com/tx/${esc(x.tx)}" rel="noopener">view</a>`;
 const T=(h,r)=>r.length?`<table><tr>${h.map(x=>"<th>"+x).join("")}</tr>${r.join("")}</table>`:"Nothing to show for this filter yet.";
-$("#mout").innerHTML=v==="listed"?T(["Land","Asking","Last sale","vs last","Seller","Expires","Market"],L.map(x=>{const s=LS[x.tokenId],d=s?Math.round((x.price-s.price)/s.price*100):null;return `<tr><td>${esc(x.name)}<td>${px(x.price)}<td>${s?px(s.price)+"<br><small>"+dd(s.timestamp)+"</small>":"–"}<td>${d==null?"–":(d>0?"+":"")+d+"%"}<td>${sa(x.seller)}<td>${dd(x.expiredAt)}<td><a href="https://marketplace.roninchain.com/collections/rrfv_genesis_land/${esc(x.tokenId)}" rel="noopener" target="_blank">Ronin Market</a></tr>`})):
-T(["Land","Price","From","To","When","Tx"],(v==="sales"?S:M).map(x=>`<tr><td>${esc(x.name)}<td>${px(x.price)}<td>${sa(x.from)}<td>${sa(x.to)}<td>${dt(x.timestamp)}<td>${tx(x)}</tr>`))}
-async function ml(){$("#mout").textContent="Loading market data. The first load can take up to a minute.";try{const r=await fetch("/api/market"),j=await r.json();if(!r.ok)throw new Error(j.error||"HTTP "+r.status);MK=j;mr()}catch(e){ML=0;$("#mout").textContent="Couldn’t load market data: "+e.message}}
-$("#mt").onchange=$("#mv").onchange=mr;
+$("#mout").innerHTML=v==="listed"?T(["Land","Source","Asking","Last sale","vs last","Seller","Expires","Link"],L.map(x=>{const s=LS[x.tokenId],d=s?Math.round((x.price-s.price)/s.price*100):null,id=esc(x.tokenId),h=x.src==="OpenSea"?`https://opensea.io/assets/ronin/${CA}/${id}`:`https://marketplace.roninchain.com/collections/rrfv_genesis_land/${id}`;return `<tr><td>${esc(x.name)}<td>${x.src}<td>${px(x.price)}<td>${s?px(s.price)+"<br><small>"+dd(s.timestamp)+"</small>":"–"}<td>${d==null?"–":(d>0?"+":"")+d+"%"}<td>${sa(x.seller)}<td>${x.expiredAt?dd(x.expiredAt):"–"}<td><a href="${h}" rel="noopener" target="_blank">${x.src}</a></tr>`})):
+T(["Land","Source","Price","From","To","When","Tx"],(v==="sales"?S:V).map(x=>`<tr><td>${esc(x.name)}<td>${x.src}<td>${px(x.price)}<td>${sa(x.from)}<td>${sa(x.to)}<td>${dt(x.timestamp)}<td>${tx(x)}</tr>`))}
+async function ml(){$("#mout").textContent="Loading market data. The first load can take up to a minute.";const g=async u=>{const r=await fetch(u),j=await r.json();if(!r.ok)throw new Error(j.error||"HTTP "+r.status);return j};
+const[a,b]=await Promise.allSettled([g("/api/market"),g("/api/opensea")]);MK=a.status==="fulfilled"?a.value:null;OS=b.status==="fulfilled"?b.value:null;
+if(!MK&&!OS){ML=0;$("#mout").textContent="Couldn’t load market data: "+(a.reason&&a.reason.message||"unknown error");return}
+M=merge();M.updated=Math.max(MK?MK.updated:0,OS?OS.updated:0);M.stale=!!((MK&&MK.stale)||(OS&&OS.stale));M.err=[MK?"":"Ronin Market",OS?"":"OpenSea"].filter(Boolean);mr()}
+$("#mt").onchange=$("#mv").onchange=$("#ms").onchange=mr;
 const _sh=show;show=function(t){_sh(t);if(t==="market"&&!MK&&!ML){ML=1;ml()}};
 function tipCopy(b){const a=$("#tipaddr").textContent;(navigator.clipboard?navigator.clipboard.writeText(a):Promise.reject()).then(()=>{b.textContent="Copied!"},()=>{const r=document.createRange();r.selectNodeContents($("#tipaddr"));const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Selected, press copy"});setTimeout(()=>{b.textContent="Copy"},2500)}
 show(location.hash.slice(1));

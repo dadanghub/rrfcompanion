@@ -1,1 +1,11 @@
-{"cleanUrls":true,"functions":{"api/market.js":{"maxDuration":60}}}
+{
+  "cleanUrls": true,
+  "functions": {
+    "api/market.js": {
+      "maxDuration": 60
+    },
+    "api/opensea.js": {
+      "maxDuration": 60
+    }
+  }
+}
