@@ -19,6 +19,8 @@ const trim = (o) => JSON.parse(JSON.stringify(o, (k, v) => (Array.isArray(v) ? v
 module.exports = async (req, res) => {
   if (!process.env.OPENSEA_API_KEY) return res.status(500).json({ error: "OPENSEA_API_KEY is not set in Vercel" });
   const out = { keyCheck: { length: KEY.length, hadExtraCharacters: RAW !== KEY, looksLike32Hex: /^[0-9a-f]{32}$/i.test(KEY) } };
+  const c = await call("/collections/doodles-official");
+  out.control = { path: c.path, status: c.status, error: c.error, errors: c.body && c.body.errors };
   out.nft = await call(`/chain/ronin/contract/${ADDR}/nfts/1`);
   const slug = (req.query && req.query.slug) || (out.nft.body && out.nft.body.nft && out.nft.body.nft.collection);
   out.slug = slug || null;
