@@ -4,7 +4,7 @@
 const ADDR = "0xa3daa6ccbe9abc148eb503c9c12b1220e1a9ca36";
 const ENDPOINT = "https://api-gateway.skymavis.com/graphql/mavis-marketplace";
 let PAGE = 100;               // falls back to 50 automatically if the API rejects 100
-const TTL = 15 * 60 * 1000;   // in-memory freshness per warm server instance
+const TTL = 10 * 60 * 1000;   // in-memory freshness per warm server instance
 const CONCURRENCY = 8;        // per data stream; 2 streams = 16 at once, far below 50/sec
 let mem = null, inflight = null;
 
@@ -70,7 +70,7 @@ async function get() {
 module.exports = async (req, res) => {
   try {
     const d = await get();
-    res.setHeader("Cache-Control", "s-maxage=1800, stale-while-revalidate=86400");
+    res.setHeader("Cache-Control", "s-maxage=600, stale-while-revalidate=86400");
     res.status(200).json(d);
   } catch (e) {
     res.status(502).json({ error: e.message });

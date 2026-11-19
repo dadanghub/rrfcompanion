@@ -61,7 +61,7 @@ async function getData() {
 module.exports = async (req, res) => {
   try {
     const d = await getData();
-    res.setHeader("Cache-Control", "s-maxage=1800, stale-while-revalidate=86400");
+    res.setHeader("Cache-Control", "s-maxage=900, stale-while-revalidate=86400");
     res.status(200).json(d);
   } catch (e) { res.status(502).json({ error: e.message }); }
 };
