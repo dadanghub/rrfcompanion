@@ -134,7 +134,7 @@ footer{text-align:center;color:var(--mu);font-size:.85rem;padding:20px 14px}
 </section>
 <section id="s-market" hidden>
 <h2>Genesis Land market</h2>
-<p class="note">Public data from Ronin Market, refreshed about every 10 minutes. Not financial advice. A “sale” here is a transfer with a recorded price (our assumption, not confirmed). Prices appear to be in wrapped RON; treat that as unconfirmed.</p>
+<p class="note">Public data from Ronin Market, refreshed about every 30 minutes. Not financial advice. A “sale” here is a transfer with a recorded price (our assumption, not confirmed). Prices appear to be in wrapped RON; treat that as unconfirmed.</p>
 <div class="grid"><div><label for="mv">View</label><select id="mv"><option value="listed">Listed now</option><option value="sales">Sales</option><option value="moves">Other transfers</option></select></div>
 <div><label for="mt">Tier</label><select id="mt"><option value="">All</option><option>Outpost</option><option>Highlands</option><option>Skyrealm</option><option>Unrevealed</option></select></div></div>
 <div class="grid" id="mtier" style="margin-top:14px"></div>
@@ -200,7 +200,7 @@ const TC={Outpost:"#3b82a8",Highlands:"#c98a1a",Skyrealm:"#8a4fc2"};
 function ts(){const now=Date.now()/1000;$("#mtier").innerHTML=Object.keys(TC).map(n=>{const li=MK.listings.filter(x=>x.tier===n),sl=MK.transfers.filter(x=>x.tier===n&&x.price!=null),fl=li.length?Math.min(...li.map(x=>x.price)):null,vol=sl.reduce((a,x)=>a+x.price,0),v24=sl.filter(x=>x.timestamp>now-86400).reduce((a,x)=>a+x.price,0);return `<div class="card" style="margin:0;border-color:${TC[n]}"><h3>${n}</h3><p class="big" style="font-size:1.5rem;margin:0">${px(fl)}</p><p style="margin:4px 0 0;color:var(--mu)">floor · ${li.length} listed<br>${sl.length} sales · ${px(vol)} volume<br>${px(v24)} in the last 24 h</p></div>`}).join("")}
 function mr(){if(!MK)return;setTimeout(()=>{$("#mout").scrollLeft=0});const tr=$("#mt").value,v=$("#mv").value,ok=x=>!tr||x.tier===tr;
 const LS={};MK.transfers.forEach(x=>{if(x.price!=null&&!LS[x.tokenId])LS[x.tokenId]=x});const L=MK.listings.filter(ok).sort((a,b)=>a.price-b.price),S=MK.transfers.filter(x=>ok(x)&&x.price!=null),M=MK.transfers.filter(x=>ok(x)&&x.price==null);
-ts();$("#mst").textContent=`${L.length} listed${L.length?", lowest "+px(L[0].price):""} · ${S.length} sales · ${M.length} other transfers · updated ${dt(MK.updated)}`;
+ts();$("#mst").textContent=`${L.length} listed${L.length?", lowest "+px(L[0].price):""} · ${S.length} sales · ${M.length} other transfers · updated ${dt(MK.updated)}${MK.stale?" (saved copy)":""}`;
 const tx=x=>`<a href="https://app.roninchain.com/tx/${esc(x.tx)}" rel="noopener">view</a>`;
 const T=(h,r)=>r.length?`<table><tr>${h.map(x=>"<th>"+x).join("")}</tr>${r.join("")}</table>`:"Nothing to show for this filter yet.";
 $("#mout").innerHTML=v==="listed"?T(["Land","Asking","Last sale","vs last","Seller","Expires","Market"],L.map(x=>{const s=LS[x.tokenId],d=s?Math.round((x.price-s.price)/s.price*100):null;return `<tr><td>${esc(x.name)}<td>${px(x.price)}<td>${s?px(s.price)+"<br><small>"+dd(s.timestamp)+"</small>":"–"}<td>${d==null?"–":(d>0?"+":"")+d+"%"}<td>${sa(x.seller)}<td>${dd(x.expiredAt)}<td><a href="https://marketplace.roninchain.com/collections/rrfv_genesis_land/${esc(x.tokenId)}" rel="noopener" target="_blank">Ronin Market</a></tr>`})):
