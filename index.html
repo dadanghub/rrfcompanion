@@ -68,6 +68,13 @@ footer a,#mout a{display:inline-flex;align-items:center;min-height:44px;min-widt
 details.card summary{cursor:pointer;font:600 1.05rem Fredoka,sans-serif;min-height:44px;display:flex;align-items:center;gap:8px}.card ul{margin:.4em 0;padding-left:1.2em}.card li{margin:.2em 0}.src{font-size:.85rem;color:var(--mu)}
 details.card summary::before{content:"";width:8px;height:8px;flex:none;border:solid var(--g);border-width:0 2px 2px 0;transform:rotate(-45deg);margin-right:2px}
 details.card[open] summary::before{transform:rotate(45deg)}
+#wk details{scroll-margin-top:76px}
+.wiki-summary{display:grid;gap:2px;min-width:0}
+.wiki-summary small{font:600 .8rem Nunito,system-ui,sans-serif;color:var(--mu)}
+.wiki-summary + .tag{margin-left:auto;flex:none}
+.wiki-fields{display:grid;grid-template-columns:minmax(7rem,max-content) minmax(0,1fr);gap:6px 12px;margin:12px 0}
+.wiki-fields dt{font-weight:800}.wiki-fields dd{margin:0}
+.wiki-upgrades th,.wiki-upgrades td{white-space:normal}
 #guide-progression th,#guide-progression td{white-space:normal;vertical-align:top}
 .ct{border:1.5px solid var(--ln);border-radius:12px;padding:10px 12px;margin:8px 0}.ct code{display:block;word-break:break-all;font-size:.85rem;margin:4px 0}.ct button,.ct a.b{display:inline-flex;align-items:center;min-height:44px;min-width:44px;padding:8px 12px;border:1.5px solid var(--ln);border-radius:10px;background:var(--sf);color:var(--tx);font:700 .85rem Nunito,sans-serif;text-decoration:none;cursor:pointer;margin:4px 6px 0 0}
 </style></head><body>
@@ -169,13 +176,15 @@ details.card[open] summary::before{transform:rotate(45deg)}
 <p class="note">Gaps: no official per-recipe data, animal tables, or fee schedule beyond the above. They stay “Coming soon” rather than guessed.</p>
 </section>
 <section id="s-wiki" hidden>
-<h2>Search the companion</h2>
-<label for="gq">Search lands, crops, economy topics and wiki pages</label><input type="search" id="gq" placeholder="e.g. relic, wheat, fishing">
-<div class="card" id="gr" style="margin-top:12px" aria-live="polite"></div>
 <h2>Wiki</h2>
-<p class="note"><span class="tag t-u">Coming soon</span> Entries stay empty until they can be sourced. Nothing here is invented.</p>
-<div class="grid" id="wk"></div>
-<details class="card"><summary><b>Every wiki entry will have</b></summary><p>Name, image, category, description, properties, unlock conditions, uses, related items, source link, verification status (Confirmed, Draft, Planned, Community Finding or Unknown), last updated date and game version.</p></details>
+<p class="note"><span class="tag t-d">Draft</span> Unlock levels and costs follow the official economy draft. The beta guide explains how assets are used.</p>
+<div class="grid">
+<div><label for="wiki-category">Browse entries</label><select id="wiki-category"><option>Crops</option><option>Animals</option><option>Buildings</option></select></div>
+<div><label for="gq">Search the companion</label><input type="search" id="gq" placeholder="e.g. wheat, dairy, relic"></div>
+</div>
+<div class="card" id="gr" style="margin-top:12px" aria-live="polite" hidden></div>
+<div id="wk" style="margin-top:12px"></div>
+<details class="card" id="wiki-pending-topics"><summary>Other Wiki topics</summary><div class="grid" id="wiki-pending"></div></details>
 </section>
 <section id="s-guide" hidden>
 <h2>Gameplay guide</h2>
@@ -440,17 +449,100 @@ let st={};try{st=JSON.parse(localStorage.getItem("rrf-cl")||"{}")}catch(e){}
 function cl(){$("#cl").innerHTML=K.map((k,i)=>`<label class="chk"><input type="checkbox" data-i="${i}" ${st[i]?"checked":""}><span>${k[0]} <span class="tag ${k[1]=="c"?"t-c":"t-u"}">${k[1]=="c"?"Confirmed":"Tip"}</span></span></label>`).join("");
 document.querySelectorAll("#cl input").forEach(e=>e.onchange=()=>{st[e.dataset.i]=e.checked;try{localStorage.setItem("rrf-cl",JSON.stringify(st))}catch(x){}})}
 $("#reset").onclick=()=>{st={};try{localStorage.removeItem("rrf-cl")}catch(e){}cl()};cl();
-const W={Farming:["Crops","Seeds","Trees","Harvesting","Energy"],Animals:["Animal types","Animal products","Feed","Production cycles"],Buildings:["Factories","Production facilities","Building upgrades","Unlock requirements"],Resources:["Raw materials","Processed materials","Crafting ingredients","Rare resources"],Gameplay:["Quests","Orders","Fishing","Mining","Progression","Reputation"],"Genesis Lands":["Land types","Relics","Land upgrades","Rice Paddy","Land lending"],Economy:["Gold","$RONKE","Marketplace","Fees","Reward systems"],Collectibles:["Ronkeverse NFTs","Rarity","Traits","Holder utilities"]};
-$("#wk").innerHTML=Object.entries(W).map(([k,v])=>`<div class="card"><h3>${k}</h3>${v.map(x=>`<div style="padding:4px 0;color:var(--mu)">${x} <span class="tag t-u">Coming soon</span></div>`).join("")}</div>`).join("");
+const W={Farming:["Trees","Harvesting","Energy"],Resources:["Raw materials","Processed materials","Crafting ingredients","Rare resources"],Gameplay:["Quests","Orders","Fishing","Progression","Reputation"],"Genesis Lands":["Land types","Relics","Land upgrades","Land lending"],Economy:["Gold","$RONKE","Marketplace","Fees","Reward systems"],Collectibles:["Ronkeverse NFTs","Rarity","Traits","Holder utilities"]};
+const wikiUnknown="Not yet documented";
+const wikiGold=amount=>amount==null?wikiUnknown:typeof amount==="number"?amount.toLocaleString("en-US")+" gold":amount;
+const wikiLevel=level=>level==null?wikiUnknown:typeof level==="number"?"Level "+level:level;
+const wikiSources={
+  crops:["Economy draft · crops and progression","https://genesisland.rrfvillage.xyz/economy#crops"],
+  prices:["Economy draft · gold prices","https://genesisland.rrfvillage.xyz/economy#sinks"],
+  mechanics:["Economy draft · tool upkeep","https://genesisland.rrfvillage.xyz/economy#mechanics"],
+  growing:["RRF Assets beta guide · crops","https://rrf-assets.gitbook.io/rrf-assets-docs/crops-and-trees"],
+  animals:["RRF Assets beta guide · animals","https://rrf-assets.gitbook.io/rrf-assets-docs/animals"],
+  buildings:["RRF Assets beta guide · barn, mine and windmill","https://rrf-assets.gitbook.io/rrf-assets-docs/barn-mine-and-windmill"]
+};
+const wikiEntries={
+  Crops:[
+    ...C.map(([name,level,,seed,sale,xp,uses])=>({
+      name,level,cost:seed,costLabel:"Seed cost",sources:["crops","growing"],
+      fields:[["Shop sale",wikiGold(sale)],["XP per harvest",xp],["Uses",uses],["Harvest yield",wikiUnknown]]
+    })),
+    {name:"Rice",level:"Genesis Land only",costLabel:"Seed cost",sources:["crops","growing"],
+      description:"Rice grows in a Rice Paddy. Other farmers can buy rice from landowners on the market.",
+      fields:[["Player level",wikiUnknown],["Growth time",wikiUnknown],["Harvest yield",wikiUnknown]]}
+  ],
+  Animals:[
+    {name:"Cow",level:1,cost:1200,description:"Cow feed starts milk production.",sources:["prices","animals"],
+      upgrades:[[2,10,5900],[3,20,20500],[4,30,62500,"Genesis Land only"],[5,40,205000,"Genesis Land only"]]},
+    {name:"Chicken coop",level:9,cost:2300,description:"Give chickens chicken feed to start egg production.",sources:["prices","animals"],
+      upgrades:[[2,19,9700],[3,29,80500],[4,39,130000,"Genesis Land only"],[5,49,225000,"Genesis Land only"]]},
+    {name:"Pig",level:16,cost:3100,description:"Pig feed starts pork production.",sources:["prices","animals"],
+      upgrades:[[2,26,34000],[3,36,165000],[4,46,165000,"Genesis Land only"],[5,56,240000,"Genesis Land only"]]}
+  ],
+  Buildings:[
+    {name:"Feed Factory",level:1,cost:780,description:"Makes feed for cows, chickens and pigs.",sources:["prices","animals"]},
+    {name:"Windmill",level:3,cost:980,description:"Mills crops into flour for recipes.",sources:["prices","buildings"]},
+    {name:"Delivery Cart",level:5,cost:720,description:"Used for delivery orders. The draft allows one cart per player.",sources:["prices","crops"]},
+    {name:"Dairy",level:5,cost:5800,sources:["prices"],upgrades:[[2,14,14000],[3,21,49500]]},
+    {name:"Forge",level:6,cost:1500,description:"Makes Repair Kits for fishing rods and mining stations.",sources:["prices","mechanics"]},
+    {name:"Mine",level:6,cost:2900,description:"Provides materials for crafting and farm expansion. Upgrading it opens access to rarer finds.",sources:["prices","buildings"],
+      upgrades:[[2,11,8200],[3,18,18500],[4,22,25500,"Genesis Land only"],[5,34,170000,"Genesis Land only"]]},
+    {name:"Bakery",level:9,cost:7600,sources:["prices"],upgrades:[[2,16,15500],[3,26,115000]]},
+    {name:"Smelter",level:12,cost:8300,sources:["prices"],upgrades:[[2,23,40500],[3,31,195000]]},
+    {name:"Smokehouse",level:18,cost:10500,sources:["prices"],upgrades:[[2,27,77000],[3,35,305000]]},
+    {name:"Sushi Bar",level:20,cost:"Quest reward",sources:["prices","crops"],upgrades:[[2,29,96500],[3,37,360000]]},
+    {name:"Jeweler",level:28,cost:71500,sources:["prices"],upgrades:[[2,33,185000],[3,41,470000]]},
+    {name:"Apiary",level:35,cost:61000,description:"Bees make honey when you grow sugarcane nearby.",sources:["prices","animals"]},
+    {name:"Barn",description:"The beta guide lists 50 starting item slots.",sources:["prices","buildings"],
+      upgrades:[[2,6,1500],[3,9,2900],[4,12,4200],[5,15,6000],["6–15","Levels 18–45","14,500–135,000 gold","Genesis Land only"]]},
+    {name:"Rice Paddy",level:"Genesis Land only",cost:"Placed free",description:"Grows rice. Each upgrade also requires bars, bricks and hardwood.",sources:["prices","crops"],
+      upgrades:[["12 plots",20,60000],["16 plots",30,150000]]}
+  ]
+};
+const wikiEntryId=name=>"wiki-"+name.toLowerCase().replace(/ /g,"-");
+function renderWikiEntry(entry,category){
+  const level=wikiLevel(entry.level),price=wikiGold(entry.cost);
+  const summary=[level,price].filter(value=>value!==wikiUnknown).join(" · ");
+  const fields=[["Unlock",level],[entry.costLabel||"Initial cost",price],...(entry.fields||[])];
+  const upgrades=entry.upgrades?.map(([name,at,cost,note])=>
+    `<tr><td>${name}</td><td>${wikiLevel(at)}</td><td>${wikiGold(cost)}${note?`<br><small>${note}</small>`:""}</td></tr>`).join("");
+  const sources=entry.sources.map(key=>wikiSources[key]).map(([label,href])=>`<a href="${href}">${label}</a>`).join(" · ");
+  return `<details class="card" id="${wikiEntryId(entry.name)}" data-wiki-category="${category}">
+    <summary><span class="wiki-summary"><strong>${entry.name}</strong>${summary?`<small>${summary}</small>`:""}</span><span class="tag t-d">Draft</span></summary>
+    ${entry.description?`<p>${entry.description}</p>`:""}
+    <dl class="wiki-fields">${fields.map(([label,value])=>`<dt>${label}</dt><dd>${value}</dd>`).join("")}</dl>
+    ${upgrades?`<div class="scroll wiki-upgrades"><table><thead><tr><th scope="col">Upgrade</th><th scope="col">Player level</th><th scope="col">Gold cost</th></tr></thead><tbody>${upgrades}</tbody></table></div>`:""}
+    <p class="src">Checked 20 Nov 2026 · Economy v1 draft<br>${sources}</p>
+  </details>`;
+}
+const wikiCategory=$("#wiki-category");
+$("#wk").innerHTML=Object.entries(wikiEntries).map(([category,entries])=>
+  `<div data-wiki-group="${category}">${entries.map(entry=>renderWikiEntry(entry,category)).join("")}</div>`).join("");
+function showWikiCategory(){
+  $("#wk").querySelectorAll("[data-wiki-group]").forEach(group=>{group.hidden=group.dataset.wikiGroup!==wikiCategory.value});
+}
+wikiCategory.onchange=showWikiCategory;showWikiCategory();
+$("#wiki-pending").innerHTML=Object.entries(W).map(([category,topics])=>
+  `<div><h3>${category}</h3>${topics.map(topic=>`<div>${topic} <span class="tag t-u">Coming soon</span></div>`).join("")}</div>`).join("");
 const R=[["10 Nov 2026","Genesis Land mint: 3,169 lands on Ronin Launchpad","d"],["After the mint","Game launch on Ronin mainnet, free farms capped at 15x15","d"],["Season 0 to 3 Jan","Founders Season: 40 pass tiers, richer tracks","d"],["Mid Season 0","Cashback system","p"],["4 Jan to 28 Feb","Season 1, Frostfall: 50 tiers","d"],["1 Mar to 25 Apr","Season 2, Bloom: 50 tiers","d"],["Later","Guilds and Rift dungeons","p"]];
 $("#rm").innerHTML=R.map(r=>`<div class="chk"><span><b>${r[0]}</b>: ${r[1]} <span class="tag ${r[2]=="p"?"t-p":"t-d"}">${r[2]=="p"?"Planned":"Draft"}</span> <a href="https://genesisland.rrfvillage.xyz/economy#roadmap">source</a></span></div>`).join("");
-const X=[...L.map(l=>[l.n+" ("+l.rar+" land)","Genesis Lands","lands"]),...C.map(c=>[c[0]+" crop, level "+c[1],"Crops","crops"]),["Gold and $RONKE","Economy","econ"],["Withdrawals and fees","Economy","econ"],["Cashback","Economy","econ"],["Land lending","Economy","econ"],["Ronkeverse NFT bonuses","Holder","holder"],["Fishing casts","Holder","holder"],["Relic islands","Genesis Lands","lands"],["Roadmap and seasons","Economy","econ"],["First-day checklist","Guide","start"],["XP and level reference","Guide · progression, unlocks and season levels","guide","guide-progression"],...Object.entries(W).flatMap(([k,v])=>v.map(x=>[x+" (wiki, coming soon)",k,"wiki"]))];
-function gs(){const q=$("#gq").value.toLowerCase().trim(),f=X.filter(x=>!q||(x[0]+x[1]).toLowerCase().includes(q)).slice(0,12);
+const X=[...L.map(l=>[l.n+" ("+l.rar+" land)","Genesis Lands","lands"]),...C.map(c=>[c[0]+" crop, level "+c[1],"Crops","crops"]),["Gold and $RONKE","Economy","econ"],["Withdrawals and fees","Economy","econ"],["Cashback","Economy","econ"],["Land lending","Economy","econ"],["Ronkeverse NFT bonuses","Holder","holder"],["Fishing casts","Holder","holder"],["Relic islands","Genesis Lands","lands"],["Roadmap and seasons","Economy","econ"],["First-day checklist","Guide","start"],["XP and level reference","Guide · progression, unlocks and season levels","guide","guide-progression"],...Object.entries(W).flatMap(([k,v])=>v.map(x=>[x+" (wiki, coming soon)",k,"wiki","wiki-pending-topics"]))];
+function gs(){const q=$("#gq").value.toLowerCase().trim(),f=X.filter(x=>q&&(x[0]+" "+x[1]).toLowerCase().includes(q)).slice(0,12);
+$("#gr").hidden=!q;
 $("#gr").innerHTML=f.length?f.map(([title,category,tab,details])=>`<a class="chk" style="text-decoration:none;color:var(--tx)" href="#${tab}"${details?` data-details="${details}"`:""}><span><b>${title}</b><br><small style="color:var(--mu)">${category}</small></span></a>`).join(""):"No matches. Try a crop name like “wheat”, or a topic like “fees”."}
 $("#gr").addEventListener("click",e=>{
   const result=e.target.closest("[data-details]");
-  if(result)document.getElementById(result.dataset.details).open=true;
+  if(!result)return;
+  const details=document.getElementById(result.dataset.details),category=details.dataset.wikiCategory;
+  if(category){
+    wikiCategory.value=category;
+    showWikiCategory();
+  }
+  details.open=true;
+  if(details.closest("#s-wiki"))details.querySelector("summary").focus();
 });
+X.unshift(...Object.entries(wikiEntries).flatMap(([category,entries])=>
+  entries.map(entry=>[entry.name,`Wiki · ${category}`,"wiki",wikiEntryId(entry.name)])));
 X.push(["Crop planner and unlock days","Crops · gold per energy","crops"],["Withering timer","Crops","crops","crop-withering"]);
 $("#gq").oninput=gs;gs();
 let MK=null,OS=null,M=null,ML=0;
