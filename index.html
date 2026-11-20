@@ -76,7 +76,7 @@ details.card[open] summary::before{transform:rotate(45deg)}
 .wiki-fields dt{font-weight:800}.wiki-fields dd{margin:0}
 .wiki-upgrades th,.wiki-upgrades td{white-space:normal}
 #guide-progression th,#guide-progression td{white-space:normal;vertical-align:top}
-#econ-limits th,#econ-limits td{white-space:normal;vertical-align:top}
+#econ-limits th,#econ-limits td,#econ-cashback th,#econ-cashback td{white-space:normal;vertical-align:top}
 .ct{border:1.5px solid var(--ln);border-radius:12px;padding:10px 12px;margin:8px 0}.ct code{display:block;word-break:break-all;font-size:.85rem;margin:4px 0}.ct button,.ct a.b{display:inline-flex;align-items:center;min-height:44px;min-width:44px;padding:8px 12px;border:1.5px solid var(--ln);border-radius:10px;background:var(--sf);color:var(--tx);font:700 .85rem Nunito,sans-serif;text-decoration:none;cursor:pointer;margin:4px 6px 0 0}
 </style></head><body>
 <header class="hero">
@@ -181,12 +181,32 @@ details.card[open] summary::before{transform:rotate(45deg)}
 </ol>
 <p class="src">Checked 20 Nov 2026. <a href="https://genesisland.rrfvillage.xyz/economy#sustainable">Official safeguards</a> · <a href="https://genesisland.rrfvillage.xyz/economy#crops">Daily resets</a> · <a href="https://genesisland.rrfvillage.xyz/economy#ronke">Ronke Board</a> · <a href="https://genesisland.rrfvillage.xyz/economy#lands">Land-only order</a>.</p>
 </details>
+<details class="card" id="econ-cashback">
+<summary>Cashback <span class="tag t-p">Planned</span></summary>
+<p>The economy draft schedules cashback for mid-Founders Season. It would apply to your own eligible $RONKE purchases from the game. The rates and the amount unlocked by each milestone can still change.</p>
+<h3>Draft rates per 100 $RONKE spent</h3>
+<div class="scroll"><table>
+<thead><tr><th scope="col">Farm</th><th scope="col">Base rate</th><th scope="col">With a Mystic relic</th></tr></thead>
+<tbody>
+<tr><td>Free farm</td><td>25</td><td>No relic island</td></tr>
+<tr><td>Outpost</td><td>30</td><td>37.5</td></tr>
+<tr><td>Highlands</td><td>35</td><td>43.75</td></tr>
+<tr><td>Skyrealm</td><td>40</td><td>50</td></tr>
+</tbody>
+</table></div>
+<p>The Mystic boost requires a relic placed on a relic island. One boost applies per player.</p>
+<div class="grid">
+<div><h3>Eligible spending</h3><ul><li>Gold</li><li>Energy and speed-ups</li><li>Sky Keys</li><li>Decoration skins</li><li>RONKE PASS</li><li>Promo packs</li></ul></div>
+<div><h3>Excluded spending</h3><ul><li>Marketplace buying, selling, or trading with other players</li><li>Land loan payments to an owner</li><li>Purchases paid with Founders’ credit</li></ul></div>
+</div>
+<p>Cashback starts locked. The draft lists player levels, pass tiers, weekly challenges, farm expansions and land ranks as milestones for unlocking portions. Amounts still locked at the end of the following season expire.</p>
+<p class="src">Checked 20 Nov 2026. <a href="https://genesisland.rrfvillage.xyz/economy#cashback">Official cashback draft</a>.</p>
+</details>
 <div class="grid">
 <div class="card"><h3>Gold</h3><p>Earned by farming, spent on your farm. It never turns into $RONKE.</p><span class="tag t-d">Draft</span></div>
 <div class="card"><h3>$RONKE</h3><p>A community token on Ronin. Spending it in-game burns 10%. Today’s playtest uses test RONKE.</p><span class="tag t-d">Draft</span></div>
 <div class="card"><h3>Ratio</h3><p class="big">4 gold = 1 RONKE</p><p>Checked weekly and moved only in fixed steps.</p><span class="tag t-d">Draft</span></div>
 <div class="card"><h3>Withdrawals</h3><p>300 to 50,000 RONKE a day, up to 3 a day, 72-hour hold on earned RONKE. Fee runs 30% to 5% by reputation band. Mainnet bank is not deployed yet.</p><span class="tag t-p">Planned</span></div>
-<div class="card"><h3>Cashback</h3><p>Part of your $RONKE spending returns as locked cashback that unlocks by playing. Planned for mid Season 0; shares may change.</p><span class="tag t-p">Planned</span></div>
 <div class="card"><h3>Land lending</h3><p>Owners lend a land for 1 to 365 days for a $RONKE price and an optional 0% to 100% production share. The owner receives 95% of the price. The dev log calls this <b>Delegation</b>: the NFT never leaves the owner’s wallet, and the deed ends if the owner sells it. It is being tested on the Ronin testnet and is not live.</p><span class="tag t-d">Draft</span></div>
 </div>
 <h3>Official contract addresses</h3>
@@ -565,7 +585,7 @@ $("#wiki-pending").innerHTML=Object.entries(W).map(([category,topics])=>
   `<div><h3>${category}</h3>${topics.map(topic=>`<div>${topic} <span class="tag t-u">Coming soon</span></div>`).join("")}</div>`).join("");
 const R=[["10 Nov 2026","Genesis Land mint: 3,169 lands on Ronin Launchpad","d"],["After the mint","Game launch on Ronin mainnet, free farms capped at 15x15","d"],["Season 0 to 3 Jan","Founders Season: 40 pass tiers, richer tracks","d"],["Mid Season 0","Cashback system","p"],["4 Jan to 28 Feb","Season 1, Frostfall: 50 tiers","d"],["1 Mar to 25 Apr","Season 2, Bloom: 50 tiers","d"],["Later","Guilds and Rift dungeons","p"]];
 $("#rm").innerHTML=R.map(r=>`<div class="chk"><span><b>${r[0]}</b>: ${r[1]} <span class="tag ${r[2]=="p"?"t-p":"t-d"}">${r[2]=="p"?"Planned":"Draft"}</span> <a href="https://genesisland.rrfvillage.xyz/economy#roadmap">source</a></span></div>`).join("");
-const X=[...L.map(l=>[l.n+" ("+l.rar+" land)","Genesis Lands","lands"]),...C.map(c=>[c[0]+" crop, level "+c[1],"Crops","crops"]),["Gold and $RONKE","Economy","econ"],["Withdrawals and fees","Economy","econ"],["Cashback","Economy","econ"],["Land lending","Economy","econ"],["Ronkeverse NFT bonuses","Holder","holder"],["Fishing casts","Holder","holder"],["Relic islands","Genesis Lands","lands"],["Roadmap and seasons","Economy","econ"],["First-day checklist","Guide","start"],["XP and level reference","Guide · progression, unlocks and season levels","guide","guide-progression"],...Object.entries(W).flatMap(([k,v])=>v.map(x=>[x+" (wiki, coming soon)",k,"wiki","wiki-pending-topics"]))];
+const X=[...L.map(l=>[l.n+" ("+l.rar+" land)","Genesis Lands","lands"]),...C.map(c=>[c[0]+" crop, level "+c[1],"Crops","crops"]),["Gold and $RONKE","Economy","econ"],["Withdrawals and fees","Economy","econ"],["Cashback","Economy","econ","econ-cashback"],["Land lending","Economy","econ"],["Ronkeverse NFT bonuses","Holder","holder"],["Fishing casts","Holder","holder"],["Relic islands","Genesis Lands","lands"],["Roadmap and seasons","Economy","econ"],["First-day checklist","Guide","start"],["XP and level reference","Guide · progression, unlocks and season levels","guide","guide-progression"],...Object.entries(W).flatMap(([k,v])=>v.map(x=>[x+" (wiki, coming soon)",k,"wiki","wiki-pending-topics"]))];
 function gs(){const q=$("#gq").value.toLowerCase().trim(),f=X.filter(x=>q&&(x[0]+" "+x[1]).toLowerCase().includes(q)).slice(0,12);
 $("#gr").hidden=!q;
 $("#gr").innerHTML=f.length?f.map(([title,category,tab,details])=>`<a class="chk" style="text-decoration:none;color:var(--tx)" href="#${tab}"${details?` data-details="${details}"`:""}><span><b>${title}</b><br><small style="color:var(--mu)">${category}</small></span></a>`).join(""):"No matches. Try a crop name like “wheat”, or a topic like “fees”."}
