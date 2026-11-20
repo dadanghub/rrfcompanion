@@ -38,7 +38,7 @@ async function build() {
   const listings = [];
   L.forEach((o) => {
     const cur = o.price && o.price.current, p = o.protocol_data && o.protocol_data.parameters;
-    if (!cur || !OK_TOKENS.includes(cur.currency) || o.status !== "ACTIVE") return;
+    if (o.asset?.identifier == null || !cur || !OK_TOKENS.includes(cur.currency) || o.status !== "ACTIVE") return;
     const end = p ? Number(p.endTime) : 0;
     if (end && end < now) return;
     listings.push({ tokenId: o.asset.identifier, seller: p ? p.offerer : "", price: amt(cur.value, cur.decimals),
