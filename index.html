@@ -124,17 +124,15 @@ details.card[open] summary::before{transform:rotate(45deg)}
 <p class="note"><span class="tag t-d">Draft</span> Compare net in-game gold per energy and estimated unlock days for an active player. The gold figures subtract the seed cost. <a href="https://genesisland.rrfvillage.xyz/economy#crops">Official economy draft</a>, checked 20 Nov 2026.</p>
 <details class="card" id="crop-withering">
 <summary>Withering timer</summary>
-<p>Choose a crop to see its harvest windows. Timing starts when the crop ripens.</p>
+<p>Choose a crop and enter when it ripened to see its harvest windows in your local time.</p>
 <label for="crop-timer-kind">Crop</label><select id="crop-timer-kind"></select>
-<div id="crop-wheat-timer">
-<label for="crop-ripe-at">When wheat ripened (your local time)</label>
+<label for="crop-ripe-at">Ripening time</label>
 <input type="datetime-local" id="crop-ripe-at">
 <button class="cta alt" id="crop-ripe-now" type="button">Use current time</button>
-<p><b id="crop-timer-stage" aria-live="polite">Enter a ripening time to start.</b> <span id="crop-timer-countdown"></span></p>
-</div>
-<p id="crop-timer-unknown" hidden><b>Not yet documented</b> for this crop’s exact cutoffs. The table shows the draft’s general windows.</p>
+<p><b id="crop-timer-stage" aria-live="polite">Enter a ripening time to start.</b><br><span id="crop-timer-countdown"></span></p>
+<p id="crop-timer-unknown" hidden>The draft gives general ranges. Exact cutoffs for this crop are <b>Not yet documented</b>.</p>
 <div class="scroll"><table id="crop-windows">
-<thead><tr><th scope="col">Harvest</th><th scope="col" id="crop-window-heading">Time after ripening</th><th scope="col" id="crop-local-heading">Starts at</th></tr></thead>
+<thead><tr><th scope="col">Harvest</th><th scope="col">Starts after ripening</th><th scope="col">Starts in local time</th></tr></thead>
 <tbody></tbody>
 </table></div>
 <p class="src"><span class="tag t-d">Draft</span> <a href="https://genesisland.rrfvillage.xyz/economy#mechanics">Official withering rules</a>, checked 20 Nov 2026.</p>
@@ -381,36 +379,51 @@ $("#cq").oninput=crops;crops();
   const stage=$("#crop-timer-stage"),countdown=$("#crop-timer-countdown");
   const localTime=new Intl.DateTimeFormat(undefined,{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
   const phases=[
-    {label:"Full harvest",hours:0,wheat:"0 to 3 hours",general:"First 3 to 4 hours"},
-    {label:"¾ harvest",hours:3,wheat:"3 to 5 hours",general:"Next 2 hours"},
-    {label:"½ harvest",hours:5,wheat:"5 to 6 hours",general:"After ¾ harvest, until the crop dies"},
-    {label:"Dead",hours:6,wheat:"From 6 hours",general:"6 to 8 hours after ripening"}
+    {label:"Full harvest",earliest:0,latest:0},
+    {label:"¾ harvest",earliest:3,latest:4},
+    {label:"½ harvest",earliest:5,latest:6},
+    {label:"Dead",earliest:6,latest:8}
   ];
-  const deadline=(ripe,phase)=>ripe+phase.hours*3600000;
+  const hour=3600000;
+  const latest=phase=>kind.value==="Wheat"?phase.earliest:phase.latest;
+  const duration=ms=>{
+    const seconds=Math.ceil(ms/1000),hours=Math.floor(seconds/3600);
+    return `${hours?hours+"h ":""}${Math.floor(seconds/60)%60}m ${seconds%60}s`;
+  };
   function updateCropClock(){
     const ripe=new Date(ripeAt.value).getTime(),now=Date.now();
     let label="Enter a ripening time to start.",remaining="";
     if(Number.isFinite(ripe)){
-      const next=phases.findIndex(phase=>deadline(ripe,phase)>now);
-      label=next===0?"Still growing":next===-1?"Dead":phases[next-1].label;
-      if(next!==-1){
-        const seconds=Math.ceil((deadline(ripe,phases[next])-now)/1000);
-        const hours=Math.floor(seconds/3600),minutes=Math.floor(seconds/60)%60;
-        remaining=`Next stage is ${phases[next].label.toLowerCase()} in ${hours?hours+"h ":""}${minutes}m ${seconds%60}s.`;
+      const elapsed=now-ripe;
+      const possible=phases.filter((phase,i)=>elapsed>=phase.earliest*hour &&
+        (i===phases.length-1 || elapsed<latest(phases[i+1])*hour));
+      label=possible.length===0?"Still growing":possible.map(phase=>phase.label).join(" or ");
+      if(possible.length>1)label+=" are both possible";
+      const next=phases.find(phase=>elapsed<latest(phase)*hour);
+      if(next){
+        const first=next.earliest*hour-elapsed,last=latest(next)*hour-elapsed;
+        if(first===last)remaining=`${next.label} starts in ${duration(first)}.`;
+        else if(first>0)remaining=`${next.label} can start in ${duration(first)} to ${duration(last)}.`;
+        else remaining=`${next.label} can start any time in the next ${duration(last)}.`;
       }
     }
     if(stage.textContent!==label)stage.textContent=label;
     countdown.textContent=remaining;
   }
   function renderCropWindows(){
-    const wheat=kind.value==="Wheat",ripe=new Date(ripeAt.value).getTime();
-    $("#crop-wheat-timer").hidden=!wheat;
-    $("#crop-timer-unknown").hidden=wheat;
-    $("#crop-local-heading").hidden=!wheat;
-    $("#crop-window-heading").textContent=wheat?"Time after ripening":"General timing";
-    $("#crop-windows tbody").innerHTML=phases.map(phase=>
-      `<tr><td>${phase.label}</td><td>${wheat?phase.wheat:phase.general}</td>${wheat?`<td>${Number.isFinite(ripe)?localTime.format(deadline(ripe,phase)):"–"}</td>`:""}</tr>`).join("");
-    if(wheat)updateCropClock();
+    const ripe=new Date(ripeAt.value).getTime();
+    $("#crop-timer-unknown").hidden=kind.value==="Wheat";
+    $("#crop-windows tbody").innerHTML=phases.map(phase=>{
+      const first=phase.earliest,last=latest(phase);
+      const offset=first===0?"At ripening":first===last?`${first} hours`:`${first} to ${last} hours`;
+      let time="–";
+      if(Number.isFinite(ripe)){
+        time=localTime.format(ripe+first*hour);
+        if(first!==last)time+=` to ${localTime.format(ripe+last*hour)}`;
+      }
+      return `<tr><td>${phase.label}</td><td>${offset}</td><td>${time}</td></tr>`;
+    }).join("");
+    updateCropClock();
   }
   kind.innerHTML=C.map(([name])=>`<option>${name}</option>`).join("");
   kind.onchange=ripeAt.oninput=renderCropWindows;
@@ -419,8 +432,8 @@ $("#cq").oninput=crops;crops();
     ripeAt.value=new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,16);
     renderCropWindows();
   };
-  timer.addEventListener("toggle",()=>{if(timer.open&&kind.value==="Wheat")updateCropClock()});
-  setInterval(()=>{if(timer.open&&!$("#s-crops").hidden&&kind.value==="Wheat")updateCropClock()},1000);
+  timer.addEventListener("toggle",()=>{if(timer.open)updateCropClock()});
+  setInterval(()=>{if(timer.open&&!$("#s-crops").hidden)updateCropClock()},1000);
   renderCropWindows();
 }
 let st={};try{st=JSON.parse(localStorage.getItem("rrf-cl")||"{}")}catch(e){}
