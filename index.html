@@ -60,6 +60,7 @@ footer a,#mout a{display:inline-flex;align-items:center;min-height:44px;min-widt
 details.card summary{cursor:pointer;font:600 1.05rem Fredoka,sans-serif;min-height:44px;display:flex;align-items:center;gap:8px}.card ul{margin:.4em 0;padding-left:1.2em}.card li{margin:.2em 0}.src{font-size:.85rem;color:var(--mu)}
 details.card summary::before{content:"";width:8px;height:8px;flex:none;border:solid var(--g);border-width:0 2px 2px 0;transform:rotate(-45deg);margin-right:2px}
 details.card[open] summary::before{transform:rotate(45deg)}
+#guide-progression th,#guide-progression td{white-space:normal;vertical-align:top}
 .ct{border:1.5px solid var(--ln);border-radius:12px;padding:10px 12px;margin:8px 0}.ct code{display:block;word-break:break-all;font-size:.85rem;margin:4px 0}.ct button,.ct a.b{display:inline-flex;align-items:center;min-height:44px;min-width:44px;padding:8px 12px;border:1.5px solid var(--ln);border-radius:10px;background:var(--sf);color:var(--tx);font:700 .85rem Nunito,sans-serif;text-decoration:none;cursor:pointer;margin:4px 6px 0 0}
 </style></head><body>
 <header class="hero">
@@ -155,7 +156,44 @@ details.card[open] summary::before{transform:rotate(45deg)}
 <h2>Gameplay guide</h2>
 <p class="note">Rewritten in our own words from the official <a href="https://genesisland.rrfvillage.xyz/economy">economy page</a> and <a href="https://genesisland.rrfvillage.xyz/devlog/how-it-works">Dev Log guide</a>, checked 20 Nov 2026. Where the two differ, this site follows the economy page’s draft. The game runs on Ronin’s testnet while testing, so RONKE in game is test RONKE. <span class="tag t-d">Draft</span></p>
 <details class="card" open><summary>Getting started</summary><p>You start with a small farm floating in the sky. Grow crops, raise animals, mine and craft, then fly down to Ronke Village by hot-air balloon to meet villagers, fish, play and trade. You earn XP from orders, planting, harvesting and mining, and levels unlock new items.</p><ul><li><b>Energy:</b> every action costs some. It refills by itself, 1 point every 30 seconds, and your maximum grows as you level up. You can also buy energy packs with RONKE.</li><li><b>Farm Store:</b> buy seeds, trees, animals, buildings and tools with gold.</li><li><b>Marketplace:</b> trade items with other players for RONKE.</li><li><b>Barn:</b> your storage. It starts with room for 50 items and can be upgraded.</li><li><b>Construction:</b> buildings take time, and you can pay RONKE to finish early.</li></ul></details>
-<details class="card"><summary>What you unlock by level</summary><div class="scroll"><table><tr><th>Level<th>You unlock</tr><tr><td>1<td>Wheat, carrot, your first cow, the feed factory</tr><tr><td>3<td>Cabbage, the windmill</tr><tr><td>5<td>Dairy, the delivery cart</tr><tr><td>6<td>Tomato, the forge, the mine</tr><tr><td>8<td>Your first farm expansion</tr><tr><td>9<td>Corn, chicken coop, bakery</tr><tr><td>12<td>Eggplant, the smelter</tr><tr><td>16<td>Cassava, pigs</tr><tr><td>18<td>Smokehouse</tr><tr><td>20<td>Potato, the Sushi Bar quest</tr><tr><td>25<td>Pumpkin</tr><tr><td>28<td>Jeweler</tr><tr><td>30<td>Chili</tr><tr><td>35<td>Sugarcane, the apiary</tr><tr><td>45<td>The last free farm expansion</tr></table></div><p class="src">Genesis Lands keep expanding to level 70 on a Skyrealm. Source: <a href="https://genesisland.rrfvillage.xyz/economy">economy page</a>. <span class="tag t-d">Draft</span></p></details>
+<details class="card" id="guide-progression"><summary>XP and level reference</summary>
+<p class="src"><span class="tag t-d">Draft</span> Source: <a href="https://genesisland.rrfvillage.xyz/economy#crops">official economy draft</a>, checked 20 Nov 2026.</p>
+<p>Levelling up refills your energy bar and adds 5 to its capacity.</p>
+<h3>XP by activity</h3>
+<div class="scroll"><table>
+<thead><tr><th scope="col">Activity</th><th scope="col">Draft XP</th></tr></thead>
+<tbody>
+<tr><td>Crop harvest</td><td>5–17 per harvest, depending on the crop. Withered crops give 0 XP. <a href="#crops">See XP by crop</a>.</td></tr>
+<tr><td>Animal products</td><td>Per collection: cow 12, chicken 10, pig 14. Add 10% per animal level. Honey gives 5 per jar.</td></tr>
+<tr><td>Feed Factory</td><td>4 per completed run.</td></tr>
+<tr><td>Other factories and the Forge</td><td>12, 18, 26 or 36 per completed run, depending on the recipe tier.</td></tr>
+<tr><td>Mining</td><td>10–26 when you collect a run, depending on the mine level.</td></tr>
+<tr><td>Tree chopping</td><td>4 per chop.</td></tr>
+<tr><td>Fishing</td><td>4, 6, 12, 25 or 60 per catch, in order from common to legendary.</td></tr>
+<tr><td>Butterflies</td><td>7 per catch, 150 for a completed family and 1,500 per season.</td></tr>
+<tr><td>Bug Busters</td><td>40 on Easy, 60 on Normal or 80 on Hard per win. The first win of the day adds 60.</td></tr>
+<tr><td>Digging</td><td>3 per dig.</td></tr>
+<tr><td>Ned’s Scoop</td><td>100 per errand, up to 450 per day.</td></tr>
+<tr><td>Task Board</td><td>40 per easy order, 75 per medium order or 120 per hard order.</td></tr>
+<tr><td>Ronke Board</td><td>15 per easy order, 25 per medium order or 40 per hard order. The land-only order gives 50.</td></tr>
+<tr><td>Deliveries</td><td>150 per shipment.</td></tr>
+<tr><td>Village quests and events</td><td>400 per quest step and 600 for the final step. Lost Map pieces give 150 each. Community tiers give 150, 400 or 1,000. The cooking contest gives 300 per week.</td></tr>
+<tr><td>Daily bonus</td><td>100 on day 3, 150 on day 5 and 250 on day 7.</td></tr>
+<tr><td>First-time milestones</td><td>Based on the XP for the level that unlocks the milestone: 10% for a building or upgrade, 25% for a farm expansion or land rank. Each milestone counts once.</td></tr>
+<tr><td>Placing items, buying, trading or betting</td><td>0 XP under the draft rules.</td></tr>
+</tbody>
+</table></div>
+<h3 style="margin-top:14px">What you unlock by level</h3>
+<div class="scroll"><table><tr><th scope="col">Level<th scope="col">You unlock</tr><tr><td>1<td>Wheat, carrot, your first cow, the feed factory</tr><tr><td>3<td>Cabbage, the windmill</tr><tr><td>5<td>Dairy, the delivery cart</tr><tr><td>6<td>Tomato, the forge, the mine</tr><tr><td>8<td>Your first free farm expansion</tr><tr><td>9<td>Corn, chicken coop, bakery</tr><tr><td>12<td>Eggplant, the smelter</tr><tr><td>16<td>Cassava, pigs</tr><tr><td>18<td>Smokehouse</tr><tr><td>20<td>Potato, the Sushi Bar quest</tr><tr><td>25<td>Pumpkin</tr><tr><td>28<td>Jeweler</tr><tr><td>30<td>Chili</tr><tr><td>35<td>Sugarcane, the apiary</tr><tr><td>45<td>The last free farm expansion</tr></table></div>
+<p class="src">Genesis Lands keep expanding past level 45. The last Skyrealm expansion requires level 70.</p>
+<h3>Estimated level at season end</h3>
+<p>The economy draft models these levels for players who play daily. Your actual level depends on how you play.</p>
+<div class="scroll"><table>
+<thead><tr><th scope="col">Player</th><th scope="col">Founders</th><th scope="col">Season 1</th><th scope="col">Season 2</th></tr></thead>
+<tbody><tr><td>Typical</td><td>About 21</td><td>About 26</td><td>About 30</td></tr>
+<tr><td>Active</td><td>About 27</td><td>About 36</td><td>About 42</td></tr></tbody>
+</table></div>
+</details>
 <details class="card"><summary>Farming and energy costs</summary><p>Till grass with the Hoe, buy a seed sack, plant, water with the Watering Can (crops only grow once watered), then tap to harvest into the barn. Other tools: Hand, Move, Ghost (see through tall objects) and Remove.</p><div class="scroll"><table><tr><th>Action<th>Energy</tr><tr><td>Till a tile<td>2</tr><tr><td>Plant a seed<td>1 (later seeds cost a little more)</tr><tr><td>Water a planted tile<td>1</tr><tr><td>Harvest, or collect milk, eggs, honey<td>Free</tr><tr><td>Feed an animal<td>2</tr><tr><td>Chop a tree<td>2</tr><tr><td>Place a building, animal or tree, or start a mine run<td>5</tr><tr><td>Craft (next update)<td>3</tr><tr><td>Summon a unit<td>8</tr></table></div></details>
 <details class="card"><summary>Crops, feed and animals</summary><ul><li><b>Wheat</b> makes cow feed; <b>corn</b> makes chicken feed; <b>carrot, cassava and cabbage</b> make pig feed. Feed is made at the Feed Factory (wheat or corn plus leaves).</li><li><b>Sugarcane</b> feeds bees. An apiary with sugarcane nearby makes honey.</li><li>Other crops go to the windmill (flour), the kitchen and advanced recipes.</li><li>Cows give milk, chickens eggs, pigs pork. Pigs unlock at level 16.</li><li>Three fertilizers (basic, organic, premium) cost 60, 150 and 300 gold and make crops grow 10, 30 and 60 minutes faster.</li><li>Trees cost gold. How many you can plant depends on your land expansion. Chopping gives wood, fibre, sap and more for expansions and recipes.</li></ul></details>
 <details class="card"><summary>Crafting buildings and Delivery Orders</summary><ul><li><b>Windmill:</b> crops into flour.</li><li><b>Dairy (level 5, 3 levels):</b> milk into cream (2 milk), butter (3) and cheese (4).</li><li><b>Bakery (level 9, 3 levels):</b> nine baked goods from flour, eggs, honey, dairy and crops. They are worth much more than the ingredients.</li><li><b>Delivery Orders:</b> the depot has three orders of 3 to 4 crates at a time. A filled order pays more than selling the goods, plus XP. Up to 8 deliveries a day, with one Delivery Cart per player.</li></ul><p class="src">The Dairy and Bakery were testers-first when the dev log was written. <span class="tag t-d">Draft</span></p></details>
@@ -287,9 +325,13 @@ const W={Farming:["Crops","Seeds","Trees","Harvesting","Energy"],Animals:["Anima
 $("#wk").innerHTML=Object.entries(W).map(([k,v])=>`<div class="card"><h3>${k}</h3>${v.map(x=>`<div style="padding:4px 0;color:var(--mu)">${x} <span class="tag t-u">Coming soon</span></div>`).join("")}</div>`).join("");
 const R=[["10 Nov 2026","Genesis Land mint: 3,169 lands on Ronin Launchpad","d"],["After the mint","Game launch on Ronin mainnet, free farms capped at 15x15","d"],["Season 0 to 3 Jan","Founders Season: 40 pass tiers, richer tracks","d"],["Mid Season 0","Cashback system","p"],["4 Jan to 28 Feb","Season 1, Frostfall: 50 tiers","d"],["1 Mar to 25 Apr","Season 2, Bloom: 50 tiers","d"],["Later","Guilds and Rift dungeons","p"]];
 $("#rm").innerHTML=R.map(r=>`<div class="chk"><span><b>${r[0]}</b>: ${r[1]} <span class="tag ${r[2]=="p"?"t-p":"t-d"}">${r[2]=="p"?"Planned":"Draft"}</span> <a href="https://genesisland.rrfvillage.xyz/economy#roadmap">source</a></span></div>`).join("");
-const X=[...L.map(l=>[l.n+" ("+l.rar+" land)","Genesis Lands","lands"]),...C.map(c=>[c[0]+" crop, level "+c[1],"Crops","crops"]),["Gold and $RONKE","Economy","econ"],["Withdrawals and fees","Economy","econ"],["Cashback","Economy","econ"],["Land lending","Economy","econ"],["Ronkeverse NFT bonuses","Holder","holder"],["Fishing casts","Holder","holder"],["Relic islands","Genesis Lands","lands"],["Roadmap and seasons","Economy","econ"],["First-day checklist","Guide","start"],...Object.entries(W).flatMap(([k,v])=>v.map(x=>[x+" (wiki, coming soon)",k,"wiki"]))];
+const X=[...L.map(l=>[l.n+" ("+l.rar+" land)","Genesis Lands","lands"]),...C.map(c=>[c[0]+" crop, level "+c[1],"Crops","crops"]),["Gold and $RONKE","Economy","econ"],["Withdrawals and fees","Economy","econ"],["Cashback","Economy","econ"],["Land lending","Economy","econ"],["Ronkeverse NFT bonuses","Holder","holder"],["Fishing casts","Holder","holder"],["Relic islands","Genesis Lands","lands"],["Roadmap and seasons","Economy","econ"],["First-day checklist","Guide","start"],["XP and level reference","Guide · progression, unlocks and season levels","guide","guide-progression"],...Object.entries(W).flatMap(([k,v])=>v.map(x=>[x+" (wiki, coming soon)",k,"wiki"]))];
 function gs(){const q=$("#gq").value.toLowerCase().trim(),f=X.filter(x=>!q||(x[0]+x[1]).toLowerCase().includes(q)).slice(0,12);
-$("#gr").innerHTML=f.length?f.map(x=>`<a class="chk" style="text-decoration:none;color:var(--tx)" href="#${x[2]}"><span><b>${x[0]}</b><br><small style="color:var(--mu)">${x[1]}</small></span></a>`).join(""):"No matches. Try a crop name like “wheat”, or a topic like “fees”."}
+$("#gr").innerHTML=f.length?f.map(([title,category,tab,details])=>`<a class="chk" style="text-decoration:none;color:var(--tx)" href="#${tab}"${details?` data-details="${details}"`:""}><span><b>${title}</b><br><small style="color:var(--mu)">${category}</small></span></a>`).join(""):"No matches. Try a crop name like “wheat”, or a topic like “fees”."}
+$("#gr").addEventListener("click",e=>{
+  const result=e.target.closest("[data-details]");
+  if(result)document.getElementById(result.dataset.details).open=true;
+});
 $("#gq").oninput=gs;gs();
 let MK=null,OS=null,M=null,ML=0;
 const dd=s=>new Date(s*1000).toLocaleDateString(undefined,{dateStyle:"medium"});
