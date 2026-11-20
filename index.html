@@ -78,6 +78,7 @@ details.card[open] summary::before{transform:rotate(45deg)}
 #guide-progression th,#guide-progression td{white-space:normal;vertical-align:top}
 #econ-limits th,#econ-limits td,#econ-cashback th,#econ-cashback td{white-space:normal;vertical-align:top}
 #econ-founders th,#econ-founders td{white-space:normal;vertical-align:top}
+#econ-gold-reference th,#econ-gold-reference td{white-space:normal;overflow-wrap:anywhere;vertical-align:top}
 .ct{border:1.5px solid var(--ln);border-radius:12px;padding:10px 12px;margin:8px 0}.ct code{display:block;word-break:break-all;font-size:.85rem;margin:4px 0}.ct button,.ct a.b{display:inline-flex;align-items:center;min-height:44px;min-width:44px;padding:8px 12px;border:1.5px solid var(--ln);border-radius:10px;background:var(--sf);color:var(--tx);font:700 .85rem Nunito,sans-serif;text-decoration:none;cursor:pointer;margin:4px 6px 0 0}
 </style></head><body>
 <header class="hero">
@@ -154,6 +155,63 @@ details.card[open] summary::before{transform:rotate(45deg)}
 
 <section id="s-econ" hidden>
 <h2>Economy at a glance</h2>
+<details class="card" id="econ-gold-reference">
+<summary>Gold and RONKE converter and prices <span class="tag t-d">Draft</span></summary>
+<h3>Gold purchase calculator</h3>
+<p>The draft rate is <b>4 gold per 1 RONKE</b>. The exchange only runs from RONKE to gold. The game checks the ratio weekly. Listed gold packs have their own prices below.</p>
+<div class="grid">
+<div><label for="gold-purchase-mode">Calculate</label><select id="gold-purchase-mode"><option value="gold">Gold I can buy</option><option value="cost">RONKE needed to buy gold</option></select></div>
+<div><label for="gold-purchase-amount" id="gold-purchase-label">RONKE to spend</label><input type="number" id="gold-purchase-amount" min="0" step="any" inputmode="decimal"></div>
+</div>
+<p id="gold-purchase-result" aria-live="polite">Enter how much RONKE you plan to spend.</p>
+<p class="src"><a href="https://genesisland.rrfvillage.xyz/economy#ronke">Official draft ratio</a>. Checked 20 Nov 2026.</p>
+<h3>Gold price list</h3>
+<p class="src"><a href="https://genesisland.rrfvillage.xyz/economy#sinks">Official gold price list</a>. Checked 20 Nov 2026.</p>
+<details class="card"><summary>Animals and buildings</summary><div class="scroll" id="gold-prices-assets"></div></details>
+<details class="card">
+<summary>Fishing and farm supplies</summary>
+<div class="scroll"><table>
+<thead><tr><th scope="col">Item</th><th scope="col">Player level</th><th scope="col">Gold cost</th></tr></thead>
+<tbody>
+<tr><td>Fiberglass rod</td><td>5</td><td>1,700</td></tr>
+<tr><td>Carbon rod</td><td>13</td><td>6,900</td></tr>
+<tr><td>Golden rod</td><td>24</td><td>41,500</td></tr>
+<tr><td>Chonkbreaker rod</td><td>33</td><td>225,000</td></tr>
+<tr><td>Full rod repair</td><td>Not yet documented</td><td>Fiberglass 800 · Carbon 1,600 · Golden 3,000 · Chonkbreaker 8,000</td></tr>
+<tr><td>Fishing bait</td><td>Not yet documented</td><td>10 worms for 80 · 5 lures for 300</td></tr>
+<tr><td>Seeds</td><td><a href="#crops">See crop unlocks</a></td><td>30 to 100 each</td></tr>
+<tr><td>Fertilizer</td><td>Not yet documented</td><td>Basic 60 (10 min faster) · Organic 150 (30 min faster) · Premium 300 (60 min faster)</td></tr>
+<tr><td>Trees</td><td>Not yet documented</td><td>1,900 each</td></tr>
+</tbody>
+</table></div>
+</details>
+<details class="card">
+<summary>Land expansions, ranks and relics</summary>
+<p>Expansion steps also require materials from the mine.</p>
+<div class="scroll" id="gold-prices-lands"></div>
+</details>
+<details class="card" id="ronke-price-snapshot">
+<summary>RONKE prices and dated dollar figures</summary>
+<p>The dollar figures are the amounts published using the 7 Nov 2026 Katana snapshot of about $0.00088 per RONKE. The draft says the pass amount is set at the start of each season.</p>
+<div class="scroll"><table>
+<thead><tr><th scope="col">Item</th><th scope="col">Draft RONKE price or rule</th><th scope="col">USD on 7 Nov 2026</th></tr></thead>
+<tbody>
+<tr><td>1,000 gold</td><td>250</td><td>$0.22</td></tr>
+<tr><td>Gold packs</td><td>500 for 2,000 gold · 2,500 for 10,500 gold (+5%) · 6,250 for 27,500 gold (+10%)</td><td>Not yet documented</td></tr>
+<tr><td>Sky Keys (1 / 5 / 10)</td><td>1,000 / 4,600 / 8,800</td><td>$0.88 / $4.03 / $7.71</td></tr>
+<tr><td>Energy (25 / 60 / 150)</td><td>75 / 170 / 375</td><td>$0.066 / $0.149 / $0.329</td></tr>
+<tr><td>Speed-ups</td><td>2 per minute</td><td>$0.105 per hour</td></tr>
+<tr><td>Feed Factory slots</td><td>250 to 450</td><td>$0.22 to $0.39</td></tr>
+<tr><td>RONKE PASS per season</td><td>$5 worth of RONKE (about 5,700 at the snapshot)</td><td>$5</td></tr>
+<tr><td>Decoration skins</td><td>250 / 400</td><td>$0.22 / $0.35</td></tr>
+<tr><td>Minimum withdrawal</td><td>300</td><td>$0.26</td></tr>
+<tr><td>Marketplace selling fee</td><td>30% down to 5%, depending on reputation. The draft records a flat 5% playtest fee.</td><td>Percentage fee</td></tr>
+<tr><td>Extra fishing cast</td><td>40 per cast, up to 10 per day</td><td>$0.035</td></tr>
+</tbody>
+</table></div>
+<p class="src"><a href="https://genesisland.rrfvillage.xyz/economy#ronke">Official RONKE price list and snapshot</a>. Checked 20 Nov 2026.</p>
+</details>
+</details>
 <details class="card" id="econ-limits">
 <summary>Limits and safeguards <span class="tag t-d">Draft</span></summary>
 <h3>Daily limits</h3>
@@ -270,7 +328,6 @@ details.card[open] summary::before{transform:rotate(45deg)}
 <div class="grid">
 <div class="card"><h3>Gold</h3><p>Earned by farming, spent on your farm. It never turns into $RONKE.</p><span class="tag t-d">Draft</span></div>
 <div class="card"><h3>$RONKE</h3><p>A community token on Ronin. Spending it in-game burns 10%. Today’s playtest uses test RONKE.</p><span class="tag t-d">Draft</span></div>
-<div class="card"><h3>Ratio</h3><p class="big">4 gold = 1 RONKE</p><p>Checked weekly and moved only in fixed steps.</p><span class="tag t-d">Draft</span></div>
 <div class="card"><h3>Withdrawals</h3><p>300 to 50,000 RONKE a day, up to 3 a day, 72-hour hold on earned RONKE. Fee runs 30% to 5% by reputation band. Mainnet bank is not deployed yet.</p><span class="tag t-p">Planned</span></div>
 <div class="card"><h3>Land lending</h3><p>Owners lend a land for 1 to 365 days for a $RONKE price and an optional 0% to 100% production share. The owner receives 95% of the price. The dev log calls this <b>Delegation</b>: the NFT never leaves the owner’s wallet, and the deed ends if the owner sells it. It is being tested on the Ronin testnet and is not live.</p><span class="tag t-d">Draft</span></div>
 </div>
@@ -650,7 +707,7 @@ $("#wiki-pending").innerHTML=Object.entries(W).map(([category,topics])=>
   `<div><h3>${category}</h3>${topics.map(topic=>`<div>${topic} <span class="tag t-u">Coming soon</span></div>`).join("")}</div>`).join("");
 const R=[["10 Nov 2026","Genesis Land mint: 3,169 lands on Ronin Launchpad","d"],["After the mint","Game launch on Ronin mainnet, free farms capped at 15x15","d"],["Season 0 to 3 Jan","Founders Season: 40 pass tiers, richer tracks","d"],["Mid Season 0","Cashback system","p"],["4 Jan to 28 Feb","Season 1, Frostfall: 50 tiers","d"],["1 Mar to 25 Apr","Season 2, Bloom: 50 tiers","d"],["Later","Guilds and Rift dungeons","p"]];
 $("#rm").innerHTML=R.map(r=>`<div class="chk"><span><b>${r[0]}</b>: ${r[1]} <span class="tag ${r[2]=="p"?"t-p":"t-d"}">${r[2]=="p"?"Planned":"Draft"}</span> <a href="https://genesisland.rrfvillage.xyz/economy#roadmap">source</a></span></div>`).join("");
-const X=[...L.map(l=>[l.n+" ("+l.rar+" land)","Genesis Lands","lands"]),...C.map(c=>[c[0]+" crop, level "+c[1],"Crops","crops"]),["Gold and $RONKE","Economy","econ"],["Withdrawals and fees","Economy","econ"],["Cashback","Economy","econ","econ-cashback"],["Land lending","Economy","econ"],["Ronkeverse NFT bonuses","Holder","holder"],["Fishing casts","Holder","holder"],["Relic islands","Genesis Lands","lands"],["Roadmap and seasons","Economy","econ"],["First-day checklist","Guide","start"],["XP and level reference","Guide · progression, unlocks and season levels","guide","guide-progression"],...Object.entries(W).flatMap(([k,v])=>v.map(x=>[x+" (wiki, coming soon)",k,"wiki","wiki-pending-topics"]))];
+const X=[...L.map(l=>[l.n+" ("+l.rar+" land)","Genesis Lands","lands"]),...C.map(c=>[c[0]+" crop, level "+c[1],"Crops","crops"]),["Gold and RONKE converter and prices","Economy · price list, cost and exchange ratio","econ","econ-gold-reference"],["Withdrawals and fees","Economy","econ"],["Cashback","Economy","econ","econ-cashback"],["Land lending","Economy","econ"],["Ronkeverse NFT bonuses","Holder","holder"],["Fishing casts","Holder","holder"],["Relic islands","Genesis Lands","lands"],["Roadmap and seasons","Economy","econ"],["First-day checklist","Guide","start"],["XP and level reference","Guide · progression, unlocks and season levels","guide","guide-progression"],...Object.entries(W).flatMap(([k,v])=>v.map(x=>[x+" (wiki, coming soon)",k,"wiki","wiki-pending-topics"]))];
 function gs(){const q=$("#gq").value.toLowerCase().trim(),f=X.filter(x=>q&&(x[0]+" "+x[1]).toLowerCase().includes(q)).slice(0,12);
 $("#gr").hidden=!q;
 $("#gr").innerHTML=f.length?f.map(([title,category,tab,details])=>`<a class="chk" style="text-decoration:none;color:var(--tx)" href="#${tab}"${details?` data-details="${details}"`:""}><span><b>${title}</b><br><small style="color:var(--mu)">${category}</small></span></a>`).join(""):"No matches. Try a crop name like “wheat”, or a topic like “fees”."}
@@ -722,6 +779,52 @@ let b=0;BND.forEach((x,i)=>{if(tot>=x[1]&&g>=x[2])b=i});const nx=BND[b+1];
 let nt="You are in the top band.";if(nx){const ps=Math.max(0,nx[1]-tot),pg=Math.max(0,nx[2]-g);nt=`Next band, ${nx[0]} (${nx[3]}%): <b>${fm(ps)}</b> more score points${pg?` and a Game Score of at least ${fm(nx[2])} (<b>${fm(pg)}</b> more)`:""}.`}
 $("#rsO").innerHTML=`<p style="margin:0 0 4px">Game Score: <b>${fm(g)}</b> (age ${fm(a)} + days played ${fm(d)} + level ${fm(l)} + quests ${fm(q)} + stake ${fm(k)}${f?" − 500 flag":""})</p><p style="margin:0 0 4px">Total reputation: <b>${fm(tot)}</b> → band <b>${BND[b][0]}</b>, fee <b>${BND[b][3]}%</b> on withdrawals and market sales</p><p style="margin:0">${nt}</p>`}
 const FPD={"Free farm, 9x9 to 15x15":{lv:[8,15,22,30,38,45],g:[9300,14500,35000,105000,220000,235000],h:[2,4,8,12,24,48]},"Outpost, 16x16 to 22x22":{lv:[12,20,28,36,44,52],g:[25000,27500,98500,240000,295000,325000],h:[4,8,12,24,48,72]},"Highlands, 23x23 to 28x28":{lv:[18,28,38,48,58],g:[30000,115000,320000,370000,410000],h:[8,16,24,48,72]},"Skyrealm, 30x30 to 40x40":{lv:[22,34,46,58,70],g:[79000,385000,605000,690000,780000],h:[12,24,48,72,96]}};
+{
+  const goldPerRonke=4,mode=$("#gold-purchase-mode"),amount=$("#gold-purchase-amount");
+  const result=$("#gold-purchase-result"),number=new Intl.NumberFormat(undefined,{maximumSignificantDigits:15});
+  function calculateGoldPurchase(){
+    const buyingGold=mode.value==="gold",value=amount.valueAsNumber;
+    $("#gold-purchase-label").textContent=buyingGold?"RONKE to spend":"Gold to buy";
+    if(!amount.validity.valid){
+      result.textContent="Enter a non-negative number.";
+    }else if(!amount.value){
+      result.textContent=buyingGold?"Enter how much RONKE you plan to spend.":"Enter how much gold you want to buy.";
+    }else{
+      const converted=buyingGold?value*goldPerRonke:value/goldPerRonke;
+      result.textContent=Number.isFinite(converted)
+        ?buyingGold?`${number.format(value)} RONKE buys ${number.format(converted)} gold at the draft rate.`
+          :`Buying ${number.format(value)} gold costs ${number.format(converted)} RONKE at the draft rate.`
+        :"Enter a smaller amount.";
+    }
+  }
+  mode.onchange=amount.oninput=calculateGoldPurchase;
+  calculateGoldPurchase();
+
+  const table=rows=>`<table><thead><tr><th scope="col">Item</th><th scope="col">Player level</th><th scope="col">Gold cost</th></tr></thead><tbody>
+    ${rows.map(([name,level,cost])=>`<tr><td>${name}</td><td>${level}</td><td>${cost}</td></tr>`).join("")}</tbody></table>`;
+  const assets=[...wikiEntries.Animals,...wikiEntries.Buildings.filter(entry=>entry.name!=="Rice Paddy")];
+  $("#gold-prices-assets").innerHTML=table(assets.flatMap(entry=>{
+    const rows=entry.cost==null?[]:[[entry.name,wikiLevel(entry.level),wikiGold(entry.cost)]];
+    return rows.concat((entry.upgrades||[]).map(([tier,level,cost,restriction])=>
+      [`${entry.name} · level ${tier}`,wikiLevel(level),wikiGold(cost)+(restriction?` · ${restriction}`:"")]));
+  }));
+
+  const paddy=wikiEntries.Buildings.find(entry=>entry.name==="Rice Paddy");
+  $("#gold-prices-lands").innerHTML=table([
+    ...Object.entries(FPD).flatMap(([name,farm])=>farm.lv.map((level,index)=>
+      [`${name} · step ${index+1}`,wikiLevel(level),wikiGold(farm.g[index])])),
+    ["Tended rank",wikiLevel(15),wikiGold(13000)],
+    ["Thriving rank",wikiLevel(25),wikiGold(42500)],
+    ["Renowned rank",wikiLevel(35),wikiGold(215000)],
+    ["Ancient rank",wikiLevel(45),wikiGold(430000)],
+    [paddy.name,wikiLevel(paddy.level),wikiGold(paddy.cost)],
+    ...paddy.upgrades.map(([plots,level,cost])=>
+      [`${paddy.name} · ${plots}`,wikiLevel(level),wikiGold(cost)+" plus bars, bricks and hardwood"]),
+    ...L.filter(land=>land.rel).map(land=>[`${land.n} special-asset mint`,wikiUnknown,land.mint]),
+    ["Gold Key · Genesis Land only, up to three a week",wikiUnknown,wikiGold(25000)],
+    ["Relic extraction",wikiUnknown,"2,500 to 37,500 gold"]
+  ]);
+}
 cmp();
 const fh=h=>h>=24?Math.floor(h/24)+"d"+(h%24?" "+h%24+"h":""):h+"h";
 function fpN(){const d=FPD[$("#fpT").value];$("#fpN").innerHTML=Array.from({length:d.lv.length+1},(_,i)=>`<option value="${i}">${i===0?"None yet":i+" of "+d.lv.length}</option>`).join("");fp()}
