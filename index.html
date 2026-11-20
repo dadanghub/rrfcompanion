@@ -76,6 +76,7 @@ details.card[open] summary::before{transform:rotate(45deg)}
 .wiki-fields dt{font-weight:800}.wiki-fields dd{margin:0}
 .wiki-upgrades th,.wiki-upgrades td{white-space:normal}
 #guide-progression th,#guide-progression td{white-space:normal;vertical-align:top}
+#econ-limits th,#econ-limits td{white-space:normal;vertical-align:top}
 .ct{border:1.5px solid var(--ln);border-radius:12px;padding:10px 12px;margin:8px 0}.ct code{display:block;word-break:break-all;font-size:.85rem;margin:4px 0}.ct button,.ct a.b{display:inline-flex;align-items:center;min-height:44px;min-width:44px;padding:8px 12px;border:1.5px solid var(--ln);border-radius:10px;background:var(--sf);color:var(--tx);font:700 .85rem Nunito,sans-serif;text-decoration:none;cursor:pointer;margin:4px 6px 0 0}
 </style></head><body>
 <header class="hero">
@@ -152,6 +153,34 @@ details.card[open] summary::before{transform:rotate(45deg)}
 
 <section id="s-econ" hidden>
 <h2>Economy at a glance</h2>
+<details class="card" id="econ-limits">
+<summary>Limits and safeguards <span class="tag t-d">Draft</span></summary>
+<h3>Daily limits</h3>
+<div class="scroll"><table>
+<thead><tr><th scope="col">Activity</th><th scope="col">Draft limit</th></tr></thead>
+<tbody>
+<tr><td>Task Board</td><td>12 orders per day</td></tr>
+<tr><td>Ronke Board</td><td>6 regular orders per day, plus 1 rare-goods order for Genesis Lands</td></tr>
+<tr><td>Deliveries</td><td>8 per day, with one Delivery Cart per player</td></tr>
+<tr><td>Fishing</td><td>30 free casts per day, up to 50 total</td></tr>
+<tr><td>Withdrawals</td><td>Up to 3 per day once mainnet withdrawals are available</td></tr>
+</tbody>
+</table></div>
+<p>Orders, deliveries, fishing and relic bonuses reset at 00:00 UTC. Energy restores 1 point every 30 seconds, including while you’re offline.</p>
+<h3>Before you can earn or withdraw $RONKE</h3>
+<p>The draft requires player level 5, a game account at least 7 days old, and a wallet connected in the game. Earned $RONKE has a 72-hour hold before withdrawal. Logins and trading volume do not count toward rewards.</p>
+<p>The game server checks balances, pays orders, and verifies that each farm action has enough energy. Gold stays in the game and cannot buy past an unlock level.</p>
+<h3>Six controls on reward payouts</h3>
+<ol>
+<li><b>Daily budget.</b> The game sets a budget for each day’s rewards.</li>
+<li><b>Daily ceiling.</b> A separate cap limits the total paid that day regardless of the token price.</li>
+<li><b>Player limits.</b> Your reputation sets your individual Ronke Board limit.</li>
+<li><b>Reputation weighting.</b> Reputation affects your share of the budget and the withdrawal fee.</li>
+<li><b>Circuit breaker.</b> A surge in withdrawals, a sharp price drop (25% in a day or 40% in a week), or a low reward pool can cut the next day’s budget in half. The hold extends to 7 days, and large withdrawals wait an extra day. The draft resets these restrictions after 3 calm days.</li>
+<li><b>Reserve.</b> Amounts held back by the ceiling and circuit breaker go into a reserve for weeks when the rate would otherwise fall below half the posted rate.</li>
+</ol>
+<p class="src">Checked 20 Nov 2026. <a href="https://genesisland.rrfvillage.xyz/economy#sustainable">Official safeguards</a> · <a href="https://genesisland.rrfvillage.xyz/economy#crops">Daily resets</a> · <a href="https://genesisland.rrfvillage.xyz/economy#ronke">Ronke Board</a> · <a href="https://genesisland.rrfvillage.xyz/economy#lands">Land-only order</a>.</p>
+</details>
 <div class="grid">
 <div class="card"><h3>Gold</h3><p>Earned by farming, spent on your farm. It never turns into $RONKE.</p><span class="tag t-d">Draft</span></div>
 <div class="card"><h3>$RONKE</h3><p>A community token on Ronin. Spending it in-game burns 10%. Today’s playtest uses test RONKE.</p><span class="tag t-d">Draft</span></div>
@@ -554,6 +583,7 @@ $("#gr").addEventListener("click",e=>{
 X.unshift(...Object.entries(wikiEntries).flatMap(([category,entries])=>
   entries.map(entry=>[entry.name,`Wiki · ${category}`,"wiki",wikiEntryId(entry.name)])));
 X.push(["Crop planner and unlock days","Crops · gold per energy","crops"],["Withering timer","Crops","crops","crop-withering"]);
+X.push(["Limits and safeguards","Economy · daily limits, anti-bot rules and withdrawal hold","econ","econ-limits"]);
 $("#gq").oninput=gs;gs();
 let MK=null,OS=null,M=null,ML=0;
 const dd=s=>new Date(s*1000).toLocaleDateString(undefined,{dateStyle:"medium"});
